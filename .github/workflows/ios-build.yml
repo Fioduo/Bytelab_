@@ -14,8 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install XcodeGen
-        run: brew install xcodegen
+      - name: Install XcodeGen 2.38 (classic project format)
+        run: |
+          curl -sL -o xcodegen.zip "https://github.com/yonaskolb/XcodeGen/releases/download/2.38.0/xcodegen.zip"
+          unzip -o xcodegen.zip -d xcodegen
+          echo "$PWD/xcodegen/bin" >> "$GITHUB_PATH"
 
       - name: Generate Xcode project
         run: xcodegen generate
@@ -26,12 +29,13 @@ jobs:
             -configuration Release \
             -destination 'generic/platform=iOS' \
             CODE_SIGNING_ALLOWED=NO \
+            SYMROOT=build \
             build
 
       - name: Package unsigned .ipa
         run: |
           mkdir -p Payload
-          APP=$(find "$HOME/Library/Developer/Xcode/DerivedData" -name 'bytelab.app' -maxdepth 8 | head -1)
+          APP="build/Release-iphoneos/bytelab.app"
           echo "APP=$APP"
           cp -R "$APP" Payload/
           zip -r bytelab-unsigned.ipa Payload

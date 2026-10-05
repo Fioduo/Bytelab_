@@ -25,3 +25,10 @@ targets:
         ENABLE_PREVIEWS: YES
         SWIFT_VERSION: "5.0"
         IPHONEOS_DEPLOYMENT_TARGET: "15.0"
+schemes:
+  bytelab:
+    build:
+      targets:
+        bytelab: all
+    run:
+      config: Release
