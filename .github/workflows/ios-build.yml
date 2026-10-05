@@ -1,0 +1,43 @@
+name: build-bytelab-ios
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/ios-build.yml'
+      - 'project.yml'
+      - 'bytelab/**'
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build unsigned .app
+        run: |
+          xcodebuild -project bytelab.xcodeproj -scheme bytelab \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Package unsigned .ipa
+        run: |
+          mkdir -p Payload
+          APP=$(find "$HOME/Library/Developer/Xcode/DerivedData" -name 'bytelab.app' -maxdepth 8 | head -1)
+          echo "APP=$APP"
+          cp -R "$APP" Payload/
+          zip -r bytelab-unsigned.ipa Payload
+
+      - name: Upload .ipa
+        uses: actions/upload-artifact@v4
+        with:
+          name: bytelab-unsigned.ipa
+          path: bytelab-unsigned.ipa
