@@ -76,7 +76,7 @@ struct HomeView: View {
 
     private func loadFeed() async {
         loading = true
-        var q = curCat.isEmpty ? "" : "&cat=" + (curCat.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")
+        let q = curCat.isEmpty ? "" : "&cat=" + (curCat.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")
         if let o = try? await API.get("/api/v1/feed?page=1\(q)"),
            let d = o["data"] as? [String: Any],
            let a = d["videos"] as? [[String: Any]] {

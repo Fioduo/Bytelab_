@@ -65,7 +65,7 @@ struct VideoPlayerView: View {
 
                     Divider()
                     Text("评论 \(comments.count)").font(.subheadline).foregroundColor(.white)
-                    ForEach(comments, id: \.self) { c in
+                    ForEach(Array(comments.enumerated()), id: \.offset) { _, c in
                         VStack(alignment: .leading, spacing: 2) {
                             Text((c["user"] as? String ?? "") + "：")
                                 .font(.caption)
