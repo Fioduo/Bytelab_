@@ -1,6 +1,7 @@
 name: bytelab
 options:
   minimumXcodeGenVersion: 2.38.0
+  compatibilityVersion: "Xcode 14.0"
   deploymentTarget:
     iOS: "15.0"
   bundleIdPrefix: com.bytelab
